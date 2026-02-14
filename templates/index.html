@@ -28,10 +28,17 @@
             <main class="lg:col-span-7 space-y-6">
                 <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
                     <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Content Input</label>
-                    <div class="flex gap-3">
+
+                    <!-- UPDATED FLEX BLOCK -->
+                    <div class="flex gap-3 items-center">
                         <input type="text" id="qr-input" 
                                placeholder="Enter URL or text to encode..." 
                                class="flex-1 px-4 py-4 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium">
+
+                        <!-- NEW COLOR PICKER -->
+                        <input type="color" id="qr-color" value="#1e293b"
+                               class="w-14 h-14 rounded-xl border border-slate-200 cursor-pointer">
+
                         <button id="generate-btn" 
                                 class="bg-indigo-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-indigo-700 transition-all flex items-center gap-2 shadow-lg shadow-indigo-100">
                             Create
@@ -63,7 +70,6 @@
                         <span id="history-count" class="bg-white border border-slate-200 text-slate-600 text-[10px] font-black px-2 py-1 rounded-md">0</span>
                     </div>
                     <div id="history-container" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
-                        <!-- Items injected here -->
                     </div>
                 </div>
             </aside>
@@ -74,6 +80,53 @@
         <span id="toast-msg"></span>
     </div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <!-- 🔥 NEW SCRIPT (Dynamic QR Color Support) -->
+    <script>
+        let qr;
+
+        function generateQR(text) {
+            const selectedColor = document.getElementById("qr-color").value;
+
+            document.getElementById("qrcode").innerHTML = "";
+
+            qr = new QRCode(document.getElementById("qrcode"), {
+                text: text,
+                width: 220,
+                height: 220,
+                colorDark: selectedColor,
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        document.getElementById("generate-btn").addEventListener("click", function() {
+            const inputValue = document.getElementById("qr-input").value;
+
+            if (!inputValue.trim()) return;
+
+            generateQR(inputValue);
+
+            document.getElementById("display-card").classList.remove("hidden");
+        });
+
+        document.getElementById("qr-color").addEventListener("input", function() {
+            const currentText = document.getElementById("qr-input").value;
+
+            if(currentText.trim() !== "") {
+                generateQR(currentText);
+            }
+        });
+
+        document.getElementById("download-btn").addEventListener("click", function() {
+            const img = document.querySelector("#qrcode img");
+            if(!img) return;
+
+            const link = document.createElement("a");
+            link.href = img.src;
+            link.download = "qr-code.png";
+            link.click();
+        });
+    </script>
+
 </body>
 </html>
