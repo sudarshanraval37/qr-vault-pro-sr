@@ -69,3 +69,6 @@ qr-vault-pro/
 - **Input Validation**: API endpoints enforce content checks and length limits.
 - **ORM Protection**: Using SQLAlchemy prevents SQL Injection attacks by using parameterized queries automatically.
 - **Blueprint Pattern**: The API is registered as a Flask Blueprint, allowing for easy scaling (e.g., adding an admin panel or authentication module in the future).
+
+### demo
+![Demo](https://qr-vault-pro.vercel.app/)
